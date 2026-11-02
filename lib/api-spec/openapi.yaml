@@ -1,0 +1,443 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Respiratory Therapy Study Program API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: topics
+    description: Study topic modules
+  - name: questions
+    description: Study questions
+  - name: sessions
+    description: Test sessions
+  - name: progress
+    description: Progress and stats
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /topics:
+    get:
+      operationId: listTopics
+      tags: [topics]
+      summary: List all study topics
+      responses:
+        "200":
+          description: List of topics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Topic"
+
+  /topics/{id}:
+    get:
+      operationId: getTopic
+      tags: [topics]
+      summary: Get a single topic with study content
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Topic detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TopicDetail"
+        "404":
+          description: Not found
+
+  /topics/{id}/questions:
+    get:
+      operationId: getTopicQuestions
+      tags: [topics]
+      summary: Get all questions for a topic
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Questions for topic
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Question"
+
+  /questions:
+    get:
+      operationId: listQuestions
+      tags: [questions]
+      summary: List all questions (optionally filtered)
+      parameters:
+        - name: topicId
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: difficulty
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Question"
+
+  /sessions:
+    get:
+      operationId: listSessions
+      tags: [sessions]
+      summary: List test sessions
+      responses:
+        "200":
+          description: List of sessions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Session"
+    post:
+      operationId: createSession
+      tags: [sessions]
+      summary: Start a new test session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SessionInput"
+      responses:
+        "201":
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionWithQuestions"
+
+  /sessions/{id}:
+    get:
+      operationId: getSession
+      tags: [sessions]
+      summary: Get a session with its questions and answers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Session detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SessionWithQuestions"
+        "404":
+          description: Not found
+
+  /sessions/{id}/answers:
+    post:
+      operationId: submitAnswer
+      tags: [sessions]
+      summary: Submit an answer for a question in a session
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AnswerInput"
+      responses:
+        "200":
+          description: Answer result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnswerResult"
+
+  /sessions/{id}/complete:
+    patch:
+      operationId: completeSession
+      tags: [sessions]
+      summary: Mark a session as complete and get final score
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Completed session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+
+  /progress:
+    get:
+      operationId: getProgress
+      tags: [progress]
+      summary: Get overall study progress per topic
+      responses:
+        "200":
+          description: Progress breakdown
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TopicProgress"
+
+  /stats:
+    get:
+      operationId: getStats
+      tags: [progress]
+      summary: Get overall study statistics
+      responses:
+        "200":
+          description: Study stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudyStats"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+
+    Topic:
+      type: object
+      required: [id, title, description, sortOrder, questionCount, keyPoints]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        sortOrder:
+          type: integer
+        questionCount:
+          type: integer
+        keyPoints:
+          type: array
+          items:
+            type: string
+
+    TopicDetail:
+      type: object
+      required: [id, title, description, sortOrder, questionCount, keyPoints, studyContent]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        sortOrder:
+          type: integer
+        questionCount:
+          type: integer
+        keyPoints:
+          type: array
+          items:
+            type: string
+        studyContent:
+          type: string
+
+    Question:
+      type: object
+      required: [id, topicId, text, options, correctIndex, explanation, difficulty]
+      properties:
+        id:
+          type: integer
+        topicId:
+          type: integer
+        text:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+        correctIndex:
+          type: integer
+        explanation:
+          type: string
+        difficulty:
+          type: string
+
+    SessionInput:
+      type: object
+      required: [mode]
+      properties:
+        mode:
+          type: string
+          description: "practice | exam | topic"
+        topicId:
+          type: ["integer", "null"]
+        questionCount:
+          type: ["integer", "null"]
+
+    Session:
+      type: object
+      required: [id, mode, status, score, totalQuestions, createdAt]
+      properties:
+        id:
+          type: integer
+        mode:
+          type: string
+        topicId:
+          type: ["integer", "null"]
+        topicTitle:
+          type: ["string", "null"]
+        status:
+          type: string
+          description: "in_progress | completed"
+        score:
+          type: ["integer", "null"]
+        totalQuestions:
+          type: integer
+        createdAt:
+          type: string
+        completedAt:
+          type: ["string", "null"]
+
+    SessionWithQuestions:
+      type: object
+      required: [id, mode, status, score, totalQuestions, createdAt, questions, answers]
+      properties:
+        id:
+          type: integer
+        mode:
+          type: string
+        topicId:
+          type: ["integer", "null"]
+        topicTitle:
+          type: ["string", "null"]
+        status:
+          type: string
+        score:
+          type: ["integer", "null"]
+        totalQuestions:
+          type: integer
+        createdAt:
+          type: string
+        completedAt:
+          type: ["string", "null"]
+        questions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Question"
+        answers:
+          type: array
+          items:
+            $ref: "#/components/schemas/AnswerRecord"
+
+    AnswerInput:
+      type: object
+      required: [questionId, selectedIndex]
+      properties:
+        questionId:
+          type: integer
+        selectedIndex:
+          type: integer
+
+    AnswerResult:
+      type: object
+      required: [isCorrect, correctIndex, explanation]
+      properties:
+        isCorrect:
+          type: boolean
+        correctIndex:
+          type: integer
+        explanation:
+          type: string
+
+    AnswerRecord:
+      type: object
+      required: [questionId, selectedIndex, isCorrect]
+      properties:
+        questionId:
+          type: integer
+        selectedIndex:
+          type: integer
+        isCorrect:
+          type: boolean
+
+    TopicProgress:
+      type: object
+      required: [topicId, topicTitle, totalQuestions, attempted, correct, bestScore]
+      properties:
+        topicId:
+          type: integer
+        topicTitle:
+          type: string
+        totalQuestions:
+          type: integer
+        attempted:
+          type: integer
+        correct:
+          type: integer
+        bestScore:
+          type: ["integer", "null"]
+
+    StudyStats:
+      type: object
+      required: [totalSessions, completedSessions, avgScore, bestScore, topicsMastered, totalQuestionsAttempted]
+      properties:
+        totalSessions:
+          type: integer
+        completedSessions:
+          type: integer
+        avgScore:
+          type: ["number", "null"]
+        bestScore:
+          type: ["integer", "null"]
+        topicsMastered:
+          type: integer
+        totalQuestionsAttempted:
+          type: integer

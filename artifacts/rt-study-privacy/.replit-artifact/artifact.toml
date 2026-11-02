@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/privacy-policy/"
+title = "RT Study Privacy Policy"
+description = "A standalone public privacy policy website for the Respiratory Therapy Study Program, suitable for linking from Google Play and accessible independently from the study application."
+version = "1.0.0"
+id = "artifacts/rt-study-privacy"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/privacy-policy/" ]
+localPort = 25456
+
+[services.development]
+run = "pnpm --filter @workspace/rt-study-privacy run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/rt-study-privacy", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/rt-study-privacy/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25456"
+BASE_PATH = "/privacy-policy/"

@@ -1,0 +1,25 @@
+{
+  "name": "@workspace/scripts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "hello": "tsx ./src/hello.ts",
+    "seed-mv": "tsx ./src/seed-mv-questions.ts",
+    "seed-mv-2": "tsx ./src/seed-mv-questions-2.ts",
+    "seed-mv-3": "tsx ./src/seed-mv-questions-3.ts",
+    "seed-general": "tsx ./src/seed-general-questions.ts",
+    "seed-general-topup": "tsx ./src/seed-general-top-up.ts",
+    "seed-mv-4": "tsx ./src/seed-mv-questions-4.ts",
+    "seed-expanded": "tsx ./src/seed-expanded-content.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/pg": "^8.11.14",
+    "tsx": "catalog:"
+  }
+}
