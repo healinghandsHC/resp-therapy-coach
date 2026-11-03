@@ -409,14 +409,18 @@ importers:
         version: 3.25.76
 
   artifacts/rt-study:
+    dependencies:
+      '@capacitor/core':
+        specifier: ^8.6.0
+        version: 8.6.0
+      '@capacitor/ios':
+        specifier: ^8.6.0
+        version: 8.6.0(@capacitor/core@8.6.0)
     devDependencies:
       '@capacitor/android':
         specifier: ^8.5.2
-        version: 8.5.2(@capacitor/core@8.5.2)
+        version: 8.5.2(@capacitor/core@8.6.0)
       '@capacitor/cli':
-        specifier: ^8.5.2
-        version: 8.5.2
-      '@capacitor/core':
         specifier: ^8.5.2
         version: 8.5.2
       '@hookform/resolvers':
@@ -950,8 +954,13 @@ packages:
     engines: {node: '>=22.0.0'}
     hasBin: true
 
-  '@capacitor/core@8.5.2':
-    resolution: {integrity: sha512-agnQbGdhGw/KZFuLf7H9SY2o+oE7upkr/WPQsYaokXP6f9chaE8iVmbKkfN6SVl4w3pmz7oZ3Ur1hbkmy1hx+w==}
+  '@capacitor/core@8.6.0':
+    resolution: {integrity: sha512-9F2zzuGYTJu+wqmQSEmqnFBfGrhC/njjMCfmxbvg9mq8xJT4wNh5pxbMFZxvW/yDhYJWPEBFQxeqzfo1gKrvxg==}
+
+  '@capacitor/ios@8.6.0':
+    resolution: {integrity: sha512-Y2PE4zoBqMrSTWoVMJmX2byBznjn6egmATzoEUJiGVbVubkNpAvkF/tl0SBKDyP67ngyedTx1tQq5IGYIhby1A==}
+    peerDependencies:
+      '@capacitor/core': ^8.6.0
 
   '@commander-js/extra-typings@14.0.0':
     resolution: {integrity: sha512-hIn0ncNaJRLkZrxBIp5AsW/eXEHNKYQBh0aPdoUqNgD+Io3NIykQqpKFyKcuasZhicGaEZJX/JBSIkZ4e5x8Dg==}
@@ -3789,9 +3798,9 @@ snapshots:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
 
-  '@capacitor/android@8.5.2(@capacitor/core@8.5.2)':
+  '@capacitor/android@8.5.2(@capacitor/core@8.6.0)':
     dependencies:
-      '@capacitor/core': 8.5.2
+      '@capacitor/core': 8.6.0
 
   '@capacitor/cli@8.5.2':
     dependencies:
@@ -3816,9 +3825,13 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@capacitor/core@8.5.2':
+  '@capacitor/core@8.6.0':
     dependencies:
       tslib: 2.8.1
+
+  '@capacitor/ios@8.6.0(@capacitor/core@8.6.0)':
+    dependencies:
+      '@capacitor/core': 8.6.0
 
   '@commander-js/extra-typings@14.0.0(commander@14.0.3)':
     dependencies:

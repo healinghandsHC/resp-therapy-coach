@@ -79,5 +79,9 @@
     "vite": "catalog:",
     "wouter": "^3.3.5",
     "zod": "catalog:"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/ios": "^8.6.0"
   }
 }
